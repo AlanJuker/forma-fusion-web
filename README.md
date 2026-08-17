@@ -14,7 +14,7 @@ parallax en portada).
 
 | Capa | Tecnología |
 |---|---|
-| Framework | Next.js 15 (App Router, React 19, TypeScript) |
+| Framework | Next.js 15.5 (App Router, React 19, TypeScript) |
 | Estilos | Tailwind CSS v4 |
 | Animación | Motion (Framer Motion) + Lenis |
 | Base de datos | PostgreSQL + Prisma |
