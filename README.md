@@ -3,6 +3,9 @@
 Sitio corporativo y panel de administración de **Forma & Fusión**, estudio de
 diseño y construcción con sede en Ecuador.
 
+**En producción:** https://forma-fusion-web-production.up.railway.app
+· **Panel:** [/admin](https://forma-fusion-web-production.up.railway.app/admin)
+
 El lenguaje visual está calcado del de [big.dk](https://big.dk): blanco y negro
 puros, una grotesca neutra, retícula de cuatro columnas, líneas de 1px en lugar
 de cajas y movimiento continuo (scroll con inercia, revelados por scroll,
@@ -79,15 +82,17 @@ openssl rand -base64 32
 
 ### Acceso al panel
 
-`http://localhost:3000/admin` — credenciales del seed:
+`http://localhost:3000/admin` — credenciales por defecto del seed en local:
 
 ```
 Correo:      admin@formafusion.ec
 Contraseña:  FormaFusion2026!
 ```
 
-> Cambia estas credenciales antes de publicar el sitio: defínelas en
-> `ADMIN_EMAIL` / `ADMIN_PASSWORD` antes de ejecutar el seed.
+> Estas son solo para desarrollo local. **En producción la contraseña es otra**,
+> generada al desplegar y guardada en la variable `ADMIN_PASSWORD` del servicio
+> de Railway (`railway variables --service forma-fusion-web`). Para cambiarla,
+> actualiza la variable y borra el usuario para que el seed lo vuelva a crear.
 
 ---
 
@@ -115,6 +120,12 @@ subido desaparecería en el siguiente despliegue.
 
 ## Despliegue en Railway
 
+> Ya está desplegado. El servicio está conectado a este repositorio: **cada push
+> a `main` dispara un despliegue automático**. Las variables de entorno y la
+> contraseña del panel están configuradas en el servicio de Railway.
+
+Los pasos siguientes documentan cómo se montó, por si hay que rehacerlo:
+
 1. **Crear el proyecto** desde el repositorio de GitHub
    (`New Project → Deploy from GitHub repo`).
 
@@ -136,14 +147,14 @@ subido desaparecería en el siguiente despliegue.
    El health check apunta a `/api/health`, que además comprueba la conexión a
    Postgres.
 
-5. **Sembrar los datos de demostración** (solo la primera vez), desde la consola
-   del servicio:
+5. **Los datos se siembran solos.** El comando de arranque ejecuta
+   `prisma migrate deploy` y luego el seed. El seed asegura el usuario
+   administrador y, si la base **ya tiene proyectos**, no toca nada más: el
+   contenido editado desde `/admin` nunca se sobrescribe en un redespliegue.
 
-   ```bash
-   npm run db:seed
-   ```
-
-`PORT` lo inyecta Railway y `npm start` lo respeta.
+`PORT` lo inyecta Railway y `next start` lo respeta. El dominio del servicio
+apunta a ese mismo puerto (8080); si se cambia, hay que actualizarlo con
+`railway domain update <dominio> --port <puerto>`.
 
 ---
 
