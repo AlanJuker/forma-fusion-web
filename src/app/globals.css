@@ -85,6 +85,28 @@ html.lenis body {
   color: var(--color-paper);
 }
 
+/* ---------------------------------------------------------------------------
+   Telón de la intro. Está en el HTML servido, así que cubre desde el primer
+   pintado; desaparece en cuanto el componente de intro monta y toma el relevo
+   ("playing"), o de inmediato si la intro ya se vio en esta sesión ("done").
+--------------------------------------------------------------------------- */
+.intro-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--color-ink);
+}
+
+html[data-intro="playing"] .intro-shield,
+html[data-intro="done"] .intro-shield {
+  display: none;
+}
+
+/* Mientras corre la intro no debe verse una barra de scroll a la derecha. */
+html[data-intro="playing"] body {
+  overflow: hidden;
+}
+
 /* Barra de scroll discreta, en escala de grises */
 ::-webkit-scrollbar {
   width: 10px;

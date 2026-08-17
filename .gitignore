@@ -41,3 +41,6 @@ yarn-error.log*
 # uploads (local dev)
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+# material de referencia local (vídeos, capturas): no forma parte del producto
+/inspiration

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
 import type { Category } from "@/domain/entities/content";
+import { LogoFF } from "@/presentation/components/ui/logo";
 
 const NAV_LINKS = [
   { label: "Proyectos", href: "/proyectos", hasMenu: true },
@@ -70,12 +71,17 @@ export function SiteHeader({ categories }: SiteHeaderProps) {
           className="gutter-x flex items-center justify-between"
           style={{ height: "var(--header-height)" }}
         >
-          <Link href="/" className="group flex items-baseline gap-2.5">
-            <span className="text-[15px] font-medium tracking-[-0.02em] uppercase leading-none">
-              Forma&nbsp;&amp;&nbsp;Fusión
-            </span>
-            <span className="ui-label hidden text-grey-500 sm:block">
-              Diseño y Construcción
+          {/* Solo la marca, como en el sitio de referencia: el nombre completo
+              vive en el pie y en el título del documento. */}
+          <Link href="/" aria-label="Forma & Fusión — inicio" className="group flex items-center">
+            {/* Punto de aterrizaje de la intro: el logotipo de la secuencia se
+                mide contra este elemento y acaba justo encima. */}
+            <span
+              data-logo-target
+              className="block text-ink transition-opacity duration-300 group-hover:opacity-60"
+              style={{ fontSize: "18px" }}
+            >
+              <LogoFF />
             </span>
           </Link>
 
