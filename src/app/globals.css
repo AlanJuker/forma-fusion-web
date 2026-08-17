@@ -102,6 +102,14 @@ html[data-intro="done"] .intro-shield {
   display: none;
 }
 
+/* Red de seguridad: el panel de la intro lo monta JavaScript y solo cuando va a
+   animarse, pero si por lo que sea sobrevive con la intro ya terminada, que no
+   tape la página. Una capa negra a pantalla completa nunca debe depender de una
+   sola condición para retirarse. */
+html[data-intro="done"] .intro-overlay {
+  display: none;
+}
+
 /* Mientras corre la intro no debe verse una barra de scroll a la derecha. */
 html[data-intro="playing"] body {
   overflow: hidden;

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 
 /**
  * Entrada suave del contenido en cada navegación.
@@ -10,12 +10,12 @@ import { motion, useReducedMotion } from "motion/react";
  * `children` se sustituye cuando la ruta ya ha cambiado, así que una animación
  * de salida se quedaría a medias o retrasaría la navegación. Un fundido corto
  * con la clave del pathname basta para que el cambio se lea continuo.
+ *
+ * La preferencia de movimiento reducido la aplica `MotionProvider`; aquí no se
+ * ramifica el render, que causaría un desajuste de hidratación.
  */
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const reduced = useReducedMotion();
-
-  if (reduced) return <>{children}</>;
 
   return (
     <motion.div

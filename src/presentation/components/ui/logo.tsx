@@ -154,17 +154,3 @@ export function ProjectMark({
   );
 }
 
-/**
- * Convierte un texto en un entero estable, para que cada proyecto conserve
- * siempre su glifo. FNV-1a en lugar del clásico `hash * 31`: con pocas cadenas
- * y un módulo pequeño, aquel repartía mal y dos proyectos seguidos acababan
- * compartiendo dibujo.
- */
-export function markSeed(value: string): number {
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return hash >>> 0;
-}

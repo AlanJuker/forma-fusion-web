@@ -56,9 +56,10 @@ export default function RootLayout({
     <html lang="es" className={grotesk.variable}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: INTRO_BOOTSTRAP }} />
-        {/* Sin JavaScript no hay intro que reproducir: se retira el telón. */}
+        {/* Sin JavaScript no hay intro que reproducir: se retiran tanto el
+            telón como cualquier capa de la intro. */}
         <noscript>
-          <style>{`.intro-shield{display:none!important}`}</style>
+          <style>{`.intro-shield,.intro-overlay{display:none!important}`}</style>
         </noscript>
       </head>
       {/* El telón de la intro NO va aquí: este layout también envuelve /admin,

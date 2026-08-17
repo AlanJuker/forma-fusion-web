@@ -9,7 +9,7 @@ import {
   getRelatedProjects,
 } from "@/application/use-cases/projects";
 import { repositories } from "@/infrastructure/config/container";
-import { ProjectGrid } from "@/presentation/components/project/project-grid";
+import { ProjectList } from "@/presentation/components/project/project-list";
 import { Reveal } from "@/presentation/components/ui/reveal";
 
 export const dynamic = "force-dynamic";
@@ -155,13 +155,17 @@ export default async function ProjectDetailPage({ params }: Params) {
 
       {related.length > 0 && (
         <section className="rule-t py-16 md:py-24">
-          <div className="gutter-x mb-8 flex items-end justify-between">
-            <p className="ui-label text-grey-400">Proyectos relacionados</p>
-            <Link href="/proyectos" className="ui-label link-underline">
-              Ver todos
-            </Link>
+          <div className="gutter-x mb-6">
+            <div className="grid grid-cols-12 gap-x-4">
+              <div className="col-span-12 flex items-baseline justify-between md:col-span-6 md:col-start-3">
+                <p className="ui-label text-grey-400">Proyectos relacionados</p>
+                <Link href="/proyectos" className="ui-label link-underline">
+                  Ver todos
+                </Link>
+              </div>
+            </div>
           </div>
-          <ProjectGrid projects={related} columns={3} />
+          <ProjectList projects={related} />
         </section>
       )}
     </article>

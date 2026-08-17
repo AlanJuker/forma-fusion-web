@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 
 import type { Project } from "@/domain/entities/project";
 import { ProjectMark } from "@/presentation/components/ui/logo";
@@ -20,8 +20,6 @@ import { ProjectMark } from "@/presentation/components/ui/logo";
  *   resto        → papel en blanco
  */
 export function ProjectList({ projects }: { projects: Project[] }) {
-  const reduced = useReducedMotion();
-
   if (projects.length === 0) {
     return (
       <div className="gutter-x py-32">
@@ -39,8 +37,8 @@ export function ProjectList({ projects }: { projects: Project[] }) {
       {projects.map((project, index) => (
         <motion.article
           key={project.id}
-          initial={reduced ? undefined : { opacity: 0, y: 18 }}
-          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{
             duration: 0.9,

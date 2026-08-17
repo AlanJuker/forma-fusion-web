@@ -52,34 +52,50 @@ export function IntroOverlay() {
   const [scope, animate] = useAnimate();
   const panelRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
-  const [finished, setFinished] = useState(false);
+  // Arranca en false a propósito: en el HTML servido este componente no pinta
+  // nada. Si el panel negro viajara en el SSR, sin JavaScript (bundle
+  // bloqueado, chunk caído tras un despliegue) se quedaría cubriendo la página
+  // para siempre, porque ninguna hoja de estilos lo retira. Quien tapa la
+  // pantalla hasta que montamos es `.intro-shield`, que sí se controla por CSS
+  // y tiene su válvula de escape en <noscript>.
+  const [active, setActive] = useState(false);
 
+  // Decide si hay intro que reproducir. Solo entonces se monta el panel.
   useEffect(() => {
     const root = document.documentElement;
 
-    const alreadyPlayed = readIntroPlayed();
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     // Ya vista en esta sesión, o el usuario pide menos movimiento: se descubre
     // la página de inmediato, sin animar nada.
-    if (alreadyPlayed || prefersReduced) {
+    if (readIntroPlayed() || prefersReduced) {
       root.dataset.intro = "done";
-      setFinished(true);
       return;
     }
 
+    setActive(true);
+  }, []);
+
+  // Reproduce la secuencia una vez el panel ya está en el DOM.
+  useEffect(() => {
+    if (!active) return;
+
+    const root = document.documentElement;
     const panel = panelRef.current;
     const logo = logoRef.current;
     const target = document.querySelector<HTMLElement>("[data-logo-target]");
     if (!panel || !logo || !target) {
       root.dataset.intro = "done";
-      setFinished(true);
+      setActive(false);
       return;
     }
 
     root.dataset.intro = "playing";
+    // Se marca al empezar, no al terminar: si el visitante navega a mitad de la
+    // secuencia, la página siguiente no debe volver a reproducirla desde cero.
+    markIntroPlayed();
     // El scroll queda bloqueado mientras dura la secuencia.
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -123,10 +139,9 @@ export function IntroOverlay() {
         // Si la animación se interrumpe (desmontaje), se descubre la página.
       }
       if (cancelled) return;
-      markIntroPlayed();
       root.dataset.intro = "done";
       document.body.style.overflow = previousOverflow;
-      setFinished(true);
+      setActive(false);
     };
 
     void run();
@@ -136,9 +151,9 @@ export function IntroOverlay() {
       document.body.style.overflow = previousOverflow;
       root.dataset.intro = "done";
     };
-  }, [animate]);
+  }, [active, animate]);
 
-  if (finished) return null;
+  if (!active) return null;
 
   return (
     <div ref={scope} className="intro-overlay" aria-hidden>

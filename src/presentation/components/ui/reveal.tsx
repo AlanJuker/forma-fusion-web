@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
 interface RevealProps {
@@ -13,6 +13,11 @@ interface RevealProps {
 
 /**
  * Aparición al entrar en viewport: desplazamiento corto + fundido.
+ *
+ * La preferencia de movimiento reducido la aplica `MotionProvider` (que anula
+ * desplazamientos y conserva fundidos); no se ramifica el render, porque el
+ * hook `useReducedMotion` vale `null` en el servidor y produciría un árbol
+ * distinto al del cliente.
  * `amount: 0.15` dispara la animación en cuanto asoma el bloque, no cuando ya
  * está centrado, que es lo que hace que el scroll se sienta continuo.
  */
@@ -23,10 +28,6 @@ export function Reveal({
   className,
   once = true,
 }: RevealProps) {
-  const reduced = useReducedMotion();
-
-  if (reduced) return <div className={className}>{children}</div>;
-
   return (
     <motion.div
       className={className}
@@ -58,20 +59,6 @@ export function RevealLines({
   className?: string;
   lineClassName?: string;
 }) {
-  const reduced = useReducedMotion();
-
-  if (reduced) {
-    return (
-      <span className={className}>
-        {lines.map((line) => (
-          <span key={line} className={`block ${lineClassName ?? ""}`}>
-            {line}
-          </span>
-        ))}
-      </span>
-    );
-  }
-
   return (
     <motion.span
       className={className}
