@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Sin `output: "standalone"`: el arranque es `next start`, y ambos juntos son
+  // incompatibles (Next avisa y el servidor no queda expuesto correctamente).
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
