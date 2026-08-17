@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Sistema de diseño — calcado del lenguaje visual de big.dk:
+   blanco puro, negro puro, una grotesca neutra y una escala tipográfica que
+   salta de 11px (interfaz) a 100px+ (titulares). Sin sombras, sin bordes
+   redondeados, sin color de acento: la fotografía es el único color.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-grey-100: #f4f4f4;
+  --color-grey-200: #e6e6e6;
+  --color-grey-300: #cccccc;
+  --color-grey-400: #9e9e9e;
+  --color-grey-500: #898989;
+  --color-grey-600: #777777;
+  --color-grey-700: #333333;
+  --color-grey-800: #1b1b1b;
+
+  --font-sans: var(--font-grotesk), "Helvetica Neue", Arial, sans-serif;
+
+  /* Escala de interfaz: etiquetas, navegación, metadatos */
+  --text-nav: 0.6875rem;      /* 11px */
+  --text-label: 0.75rem;      /* 12px */
+  --text-meta: 0.8125rem;     /* 13px */
+  --text-body: 0.9375rem;     /* 15px */
+  --text-body-lg: 1.125rem;   /* 18px */
+
+  --tracking-ui: 0.08em;
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.035em;
+
+  /* Curva de easing única en todo el sitio */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  --header-height: 56px;
+  --gutter: 16px;
+  color-scheme: light;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 64px;
+    --gutter: 24px;
+  }
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+
+/* Lenis controla el scroll; el navegador no debe interferir. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* Barra de scroll discreta, en escala de grises */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-grey-300);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-grey-500);
+}
+
+@layer components {
+  /* Etiqueta de interfaz: versalitas espaciadas, el recurso más repetido
+     del sitio (navegación, metadatos, pies de imagen, botones). */
+  .ui-label {
+    font-size: var(--text-nav);
+    letter-spacing: var(--tracking-ui);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* Titular editorial: fluido de 40px a 100px, muy apretado. */
+  .display {
+    font-size: clamp(2.5rem, 7vw, 6.25rem);
+    line-height: 0.95;
+    letter-spacing: var(--tracking-tighter);
+  }
+
+  .display-sm {
+    font-size: clamp(1.75rem, 4vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  /* Subrayado que crece desde la izquierda al pasar el cursor. */
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease-brand);
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Contenedor de imagen con zoom lento al hacer hover sobre la tarjeta. */
+  .media-zoom {
+    overflow: hidden;
+    background: var(--color-grey-100);
+  }
+  .media-zoom img {
+    transition:
+      transform 1.1s var(--ease-brand),
+      opacity 0.6s ease;
+    will-change: transform;
+  }
+  .group:hover .media-zoom img {
+    transform: scale(1.045);
+  }
+}
+
+@layer utilities {
+  .gutter-x {
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+
+  /* Divisiones hairline: el sitio se estructura con líneas de 1px, no con cajas. */
+  .rule-t {
+    border-top: 1px solid var(--color-grey-200);
+  }
+  .rule-b {
+    border-bottom: 1px solid var(--color-grey-200);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Respeta a quien pide menos movimiento: se anulan transiciones y reveals. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
