@@ -1,0 +1,13 @@
+# Railway usa Nixpacks. Fijamos Node 20 para que coincida con el runtime local
+# y evitar que el builder elija una versión distinta entre despliegues.
+[phases.setup]
+nixPkgs = ["nodejs_20", "openssl"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npx prisma migrate deploy && npm run start"
