@@ -251,9 +251,9 @@ const NEWS = [
 ];
 
 async function main() {
-  console.log("Sembrando datos de demostración…");
-
   // --- Usuario administrador -------------------------------------------------
+  // Se asegura siempre: sin él nadie podría entrar al panel tras un despliegue
+  // en una base nueva. `update: {}` deja intacta la contraseña si ya se cambió.
   const email = (process.env.ADMIN_EMAIL ?? "admin@formafusion.ec").toLowerCase();
   const password = process.env.ADMIN_PASSWORD ?? "FormaFusion2026!";
   const passwordHash = await bcrypt.hash(password, 12);
@@ -264,6 +264,19 @@ async function main() {
     create: { email, name: "Administración", passwordHash, role: "ADMIN" },
   });
   console.log(`  Usuario administrador: ${email}`);
+
+  // El seed corre en cada arranque en Railway, así que a partir de aquí solo
+  // actúa sobre una base vacía: si ya hay proyectos, el contenido es del
+  // estudio y volver a sembrar revertiría lo editado desde /admin.
+  const existingProjects = await prisma.project.count();
+  if (existingProjects > 0) {
+    console.log(
+      `  Ya hay ${existingProjects} proyectos: se omiten los datos de demostración.`,
+    );
+    return;
+  }
+
+  console.log("Sembrando datos de demostración…");
 
   // --- Categorías ------------------------------------------------------------
   const categoryIds = new Map<string, string>();
