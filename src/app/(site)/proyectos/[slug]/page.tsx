@@ -39,6 +39,15 @@ export default async function ProjectDetailPage({ params }: Params) {
 
   const related = await getRelatedProjects(repositories.projects, project);
 
+  // La descripción del documento arranca con la misma frase que el resumen.
+  // Se recorta para no leer dos veces lo mismo.
+  const resumen = project.excerpt?.trim() ?? "";
+  const descripcionCompleta = project.description?.trim() ?? "";
+  const cuerpo =
+    resumen && descripcionCompleta.startsWith(resumen)
+      ? descripcionCompleta.slice(resumen.length).trim()
+      : descripcionCompleta;
+
   const facts = [
     { label: "Ubicación", value: project.location },
     { label: "Año", value: String(project.year) },
@@ -50,48 +59,76 @@ export default async function ProjectDetailPage({ params }: Params) {
   ].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
 
   return (
-    <article>
-      {/* Portada a sangre */}
-      <div className="relative h-[70vh] min-h-[420px] w-full">
-        <Image
-          src={project.coverImage}
-          alt={project.title}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: project.coverPosition }}
-        />
-      </div>
-
-      <header className="gutter-x py-12 md:py-20">
-        <div className="grid gap-10 md:grid-cols-12">
-          <div className="md:col-span-7">
+    <article className="pt-[calc(var(--header-height)+28px)] pb-24 md:pb-32">
+      {/* Todo vive dentro de la misma banda de contenido que el índice. La
+          fotografía no va a sangre: el material original ronda los 720 px de
+          ancho y estirarlo a pantalla completa lo deja blando. */}
+      <header className="gutter-x">
+        <div className="grid grid-cols-12 gap-x-4">
+          <div className="col-span-12 md:col-span-6 md:col-start-3">
             <Reveal>
               <p className="ui-label text-grey-400">
                 {project.category?.name ?? "Proyecto"}
               </p>
             </Reveal>
-            <Reveal delay={0.08}>
-              <h1 className="display-sm mt-4 text-balance">{project.title}</h1>
+            <Reveal delay={0.06}>
+              <h1 className="display-sm mt-3 text-balance">{project.title}</h1>
             </Reveal>
-            {project.excerpt && (
-              <Reveal delay={0.16}>
-                <p className="mt-6 max-w-lg text-[18px] text-grey-700">
-                  {project.excerpt}
-                </p>
+          </div>
+        </div>
+      </header>
+
+      <div className="gutter-x mt-8 md:mt-10">
+        <div className="grid grid-cols-12 gap-x-4">
+          <Reveal delay={0.1} className="col-span-12 md:col-span-6 md:col-start-3">
+            <div className="media-zoom relative aspect-[3/2] w-full">
+              <Image
+                src={project.coverImage}
+                alt={project.title}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+                quality={90}
+                className="object-cover"
+                style={{ objectPosition: project.coverPosition }}
+              />
+            </div>
+          </Reveal>
+        </div>
+      </div>
+
+      {/* Resumen y ficha técnica */}
+      <div className="gutter-x mt-10 md:mt-14">
+        <div className="grid grid-cols-12 gap-x-4 gap-y-10">
+          <div className="col-span-12 md:col-span-3 md:col-start-3">
+            {resumen && (
+              <Reveal>
+                <p className="text-[18px] text-grey-700">{resumen}</p>
+              </Reveal>
+            )}
+            {cuerpo && (
+              <Reveal delay={0.06}>
+                <div className="mt-6">
+                  {cuerpo.split("\n\n").map((paragraph) => (
+                    <p
+                      key={paragraph.slice(0, 40)}
+                      className="mb-4 text-[15px] text-grey-600"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </Reveal>
             )}
           </div>
 
-          {/* Ficha técnica */}
-          <div className="md:col-span-4 md:col-start-9">
-            <Reveal delay={0.2}>
-              <dl className="rule-t pt-4">
+          <div className="col-span-12 md:col-span-2 md:col-start-7">
+            <Reveal delay={0.12}>
+              <dl>
                 {facts.map((fact) => (
                   <div
                     key={fact.label}
-                    className="flex justify-between gap-4 border-b border-grey-200 py-3"
+                    className="flex justify-between gap-4 border-b border-grey-200 py-2.5"
                   >
                     <dt className="ui-label text-grey-400">{fact.label}</dt>
                     <dd className="text-meta text-right">{fact.value}</dd>
@@ -101,65 +138,45 @@ export default async function ProjectDetailPage({ params }: Params) {
             </Reveal>
           </div>
         </div>
+      </div>
 
-        {project.description && (
-          <Reveal delay={0.1}>
-            <div className="mt-16 grid md:grid-cols-12">
-              <div className="md:col-span-7 md:col-start-6">
-                {project.description.split("\n\n").map((paragraph) => (
-                  <p key={paragraph.slice(0, 40)} className="mb-5 text-[15px] text-grey-700">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-        )}
-      </header>
-
-      {/* Galería: alterna ancho completo y media columna para dar ritmo */}
+      {/* Galería: dos columnas dentro de la banda, para no estirar el material */}
       {project.images.length > 0 && (
-        <section className="gutter-x grid gap-4 pb-16 md:grid-cols-2">
-          {project.images.map((image, index) => {
-            const fullWidth = index % 3 === 0;
-            return (
-              <Reveal
-                key={image.id}
-                delay={0.05}
-                className={fullWidth ? "md:col-span-2" : ""}
-              >
-                <figure className="group">
-                  <div
-                    className={`media-zoom relative ${
-                      fullWidth ? "aspect-[16/9]" : "aspect-[4/3]"
-                    }`}
-                  >
-                    <Image
-                      src={image.url}
-                      alt={image.alt ?? project.title}
-                      fill
-                      sizes={fullWidth ? "100vw" : "50vw"}
-                      className="object-cover"
-                    />
-                  </div>
-                  {image.caption && (
-                    <figcaption className="ui-label mt-2 text-grey-400">
-                      {image.caption}
-                    </figcaption>
-                  )}
-                </figure>
-              </Reveal>
-            );
-          })}
+        <section className="gutter-x mt-14 md:mt-20">
+          <div className="grid grid-cols-12 gap-x-4">
+            <div className="col-span-12 grid grid-cols-2 gap-4 md:col-span-6 md:col-start-3">
+              {project.images.map((image) => (
+                <Reveal key={image.id} delay={0.04}>
+                  <figure className="group">
+                    <div className="media-zoom relative aspect-[3/2] w-full">
+                      <Image
+                        src={image.url}
+                        alt={image.alt ?? project.title}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        quality={90}
+                        className="object-cover"
+                      />
+                    </div>
+                    {image.caption && (
+                      <figcaption className="ui-label mt-2 text-grey-400">
+                        {image.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         </section>
       )}
 
       {related.length > 0 && (
-        <section className="rule-t py-16 md:py-24">
+        <section className="rule-t mt-20 pt-14 md:mt-28">
           <div className="gutter-x mb-6">
             <div className="grid grid-cols-12 gap-x-4">
               <div className="col-span-12 flex items-baseline justify-between md:col-span-6 md:col-start-3">
-                <p className="ui-label text-grey-400">Proyectos relacionados</p>
+                <p className="ui-label text-grey-400">Otros proyectos</p>
                 <Link href="/proyectos" className="ui-label link-underline">
                   Ver todos
                 </Link>

@@ -16,7 +16,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 /** Súbela cuando cambien los textos o los proyectos de este archivo. */
-const CONTENT_VERSION = "2026-08-doc-2";
+const CONTENT_VERSION = "2026-08-doc-3";
 
 const CATEGORIES = [
   { slug: "residencia-unifamiliar", name: "Residencia unifamiliar", order: 1 },
@@ -35,6 +35,7 @@ interface SeedProject {
   year: number;
   size: string;
   status: ProjectStatus;
+  /** Menor primero. El listado arranca por el trabajo más reciente. */
   order: number;
   featured: boolean;
   /** Zona de la portada que se conserva al recortarla; ver `coverPosition`. */
@@ -54,8 +55,8 @@ const PROJECTS: SeedProject[] = [
     year: 2025,
     size: "70 m²",
     status: "IN_OPERATION",
-    order: 1,
-    featured: true,
+    order: 5,
+    featured: false,
     coverPosition: "top",
     excerpt:
       "Una intervención que transforma un inmueble existente en un activo capaz de generar nuevos ingresos.",
@@ -71,8 +72,8 @@ const PROJECTS: SeedProject[] = [
     year: 2024,
     size: "190 m²",
     status: "DELIVERED",
-    order: 2,
-    featured: true,
+    order: 4,
+    featured: false,
     coverPosition: "center",
     excerpt:
       "Vivienda de dos plantas, diseñada para combinar amplitud, funcionalidad y confort.",
@@ -105,7 +106,7 @@ const PROJECTS: SeedProject[] = [
     year: 2024,
     size: "130 m²",
     status: "DELIVERED",
-    order: 4,
+    order: 2,
     featured: false,
     coverPosition: "center",
     excerpt:
@@ -122,7 +123,7 @@ const PROJECTS: SeedProject[] = [
     year: 2026,
     size: "170 m²",
     status: "FOR_SALE",
-    order: 5,
+    order: 1,
     featured: false,
     coverPosition: "center",
     excerpt:
