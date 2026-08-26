@@ -2,14 +2,14 @@
  * Logotipo "F&F".
  *
  * Las efes son modulares —solo rectángulos y ángulos de 90°, en el lenguaje del
- * sitio de referencia— y el ampersand es el de Space Grotesk, la tipografía del
- * propio sitio, en su peso más grueso.
+ * sitio de referencia— y el ampersand es un glifo tipográfico incrustado como
+ * contorno.
  *
- * Se probó a dibujar también el ampersand con rectángulos, pero un "&" es una
- * forma con curvas y una diagonal cruzada: aproximarla con celdas daba un signo
- * que no se leía. El contorno va incrustado como `path`, extraído una vez de la
- * fuente, así que no depende de que la tipografía llegue a cargar y conserva el
- * mismo grosor óptico que las astas de las efes.
+ * El signo NO sale de Space Grotesk, la tipografía del sitio: su ampersand tiene
+ * el lazo casi rectangular y no se reconoce como "&". Se usa el de DM Sans, de
+ * forma canónica y con la diagonal marcada, escalado al 91% para que su trazo
+ * pese lo mismo que las astas de las efes. Va incrustado como `path`, así que no
+ * añade ninguna descarga ni depende de que cargue una fuente.
  */
 
 const STROKE = 2.6;
@@ -18,20 +18,19 @@ const ARM_MID = 5.2; // el central es más corto, como en una F clásica
 const MID_Y = 3.9;
 const HEIGHT = 10;
 
-/** Contorno del "&", normalizado a la altura de mayúsculas del logotipo. */
+/** Contorno del "&" (DM Sans, peso 700), a la altura de las mayúsculas. */
 const AMPERSAND_PATH =
-  "M6.929 0L3.357 0Q2.471 0 1.807-0.321Q1.143-0.643 0.771-1.250Q0.400-1.857 0.400-2.700Q0.400-3.314 0.621-3.771Q0.843-4.229 1.229-4.529Q1.614-4.829 2.086-4.971L2.086-5.171Q1.371-5.386 0.914-5.914Q0.457-6.443 0.457-7.314Q0.457-8.186 0.843-8.786Q1.229-9.386 1.893-9.693Q2.557-10 3.414-10L4.971-10L4.971-8.514L3.743-8.514Q3.100-8.514 2.679-8.171Q2.257-7.829 2.257-7.157Q2.257-6.686 2.464-6.386Q2.671-6.086 3.007-5.943Q3.343-5.800 3.743-5.800L5.129-5.800L5.129-7.086L6.929-7.086L6.929-5.800L8.243-5.800L8.243-4.314L6.929-4.314L6.929 0M3.686-1.486L5.129-1.486L5.129-4.314L3.686-4.314Q3.057-4.314 2.629-3.957Q2.200-3.600 2.200-2.900Q2.200-2.186 2.650-1.836Q3.100-1.486 3.686-1.486";
+  "M10.814 0L8.514 0L3.086-5.400Q2.429-6.057 2.157-6.593Q1.886-7.129 1.886-7.729Q1.886-8.414 2.229-8.971Q2.571-9.529 3.236-9.850Q3.900-10.171 4.829-10.171Q5.757-10.171 6.393-9.829Q7.029-9.486 7.364-8.929Q7.700-8.371 7.686-7.671L5.843-7.671Q5.843-8.186 5.543-8.443Q5.243-8.700 4.800-8.700Q4.314-8.700 4.021-8.436Q3.729-8.171 3.729-7.743Q3.729-7.400 3.943-7.029Q4.157-6.657 4.600-6.200L10.814 0M4.171 0.157Q3.071 0.157 2.264-0.221Q1.457-0.600 1.014-1.286Q0.571-1.971 0.571-2.900Q0.571-3.614 0.871-4.236Q1.171-4.857 1.771-5.336Q2.371-5.814 3.257-6.100L3.986-6.329L4.829-5.129L4.171-4.914Q3.300-4.629 2.879-4.143Q2.457-3.657 2.457-3.014Q2.457-2.571 2.671-2.207Q2.886-1.843 3.300-1.629Q3.714-1.414 4.271-1.414Q5.043-1.414 5.657-1.757Q6.271-2.100 6.843-2.857Q7.100-3.200 7.357-3.629Q7.614-4.057 7.871-4.586L8.171-5.200L10.129-5.200L9.643-4.214Q9.286-3.471 8.914-2.857Q8.543-2.243 8.143-1.771Q7.329-0.757 6.364-0.300Q5.400 0.157 4.171 0.157";
 
-// Colocación del signo. Los valores salen de medir el contorno del glifo
-// (su caja es x 0.40→8.24 con la línea base en y = 0) y se dejan resueltos:
-// la escala lo deja algo por debajo del alto de las letras, como corresponde
-// tipográficamente, y la traslación lo centra en vertical.
-const AMP_SCALE = 0.92;
-const AMP_X = 7.632;
-const AMP_BASELINE_Y = 9.6;
+// Colocación del signo: la escala lo deja algo por debajo del alto de las
+// letras, como corresponde tipográficamente, y la traslación lo centra en
+// vertical (el glifo viene con la línea base en y = 0).
+const AMP_SCALE = 0.9101;
+const AMP_X = 7.48;
+const AMP_BASELINE_Y = 9.557;
 
-const SECOND_F_X = 16.215;
-const TOTAL_W = 23.215;
+const SECOND_F_X = 18.322;
+const TOTAL_W = 25.322;
 
 interface Rect {
   x: number;
