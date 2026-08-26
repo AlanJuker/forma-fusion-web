@@ -1,6 +1,35 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
+   Ampersand.
+
+   El "&" de Space Grotesk tiene el lazo casi rectangular y no se reconoce como
+   tal. Aquí se incrusta el de DM Sans, de forma canónica, restringido con
+   `unicode-range` al único carácter U+0026: el navegador lo usa SOLO para el
+   ampersand y todo lo demás sigue en Space Grotesk. Van los dos pesos para que
+   el signo no salga en negrita dentro de un texto normal.
+
+   La fuente lleva un solo glifo (menos de 2 KB cada peso) y viaja dentro del
+   CSS, así que no añade ninguna petición de red.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: "FFAmpersand";
+  src: url(data:font/ttf;base64,T1RUTwAKAIAAAwAgQ0ZGIL23IKEAAAT4AAACAE9TLzJqD2RoAAABEAAAAGBjbWFwAAwAWQAABKwAAAAsaGVhZC9wgJoAAACsAAAANmhoZWEG0QHEAAAA5AAAACRobXR4BQUAdQAABvgAAAAIbHRhZ2V+AAQAAAcAAAAAEm1heHAAAlAAAAABCAAAAAZuYW1lHKG5JgAAAXAAAAM8cG9zdAADAAAAAATYAAAAIAABAAAAAQAAr+pDcF8PPPUAAwPoAAAAAOa1Hn8AAAAA5rUefwAq//QCxQLIAAAAAwACAAAAAAAAAAEAAAPg/soAAALeACoAGQLFAAEAAAAAAAAAAAAAAAAAAAACAABQAAACAAAAAwLeAfQABQAAAooCuwAAAIwCigK7AAAB3wAxAQIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAWFhYWABAACYAJgPg/soAAALIAAwAAAABAAAAAAHwAsgAAAAAAAAAAAAzAmoAAAAEAAAAAAACADoAAAAEAAAAAQAWAAAAAAAEAAAAAgAOABYAAAAEAAAAAwAsAGAAAAAEAAAABAAmACQAAAAEAAAABQAWAEoAAAAEAAAABgAkAAAAAAAEAAAABwACADoAAAAEAAAACAACADoAAAAEAAAACQACADoAAAAEAAAACgACADoAAAAEAAAACwACADoAAAAEAAAADAACADoAAAAEAAAADQACADoAAAAEAAAADgACADoAAAAEAAAAEAAWAAAAAAAEAAAAEQAOABYAAQAAAAAAAAABADsAAQAAAAAAAQALAIwAAQAAAAAAAgAHAJcAAQAAAAAAAwAWALwAAQAAAAAABAATAJ4AAQAAAAAABQALALEAAQAAAAAABgASAIwAAQAAAAAABwABADsAAQAAAAAACAABADsAAQAAAAAACQABADsAAQAAAAAACgABADsAAQAAAAAACwABADsAAQAAAAAADAABADsAAQAAAAAADQABADsAAQAAAAAADgABADsAAQAAAAAAEAALAIwAAQAAAAAAEQAHAJcAAwABBAkAAAACADoAAwABBAkAAQAWAAAAAwABBAkAAgAOABYAAwABBAkAAwAsAGAAAwABBAkABAAmACQAAwABBAkABQAWAEoAAwABBAkABgAkAAAAAwABBAkABwACADoAAwABBAkACAACADoAAwABBAkACQACADoAAwABBAkACgACADoAAwABBAkACwACADoAAwABBAkADAACADoAAwABBAkADQACADoAAwABBAkADgACADoAAwABBAkAEAAWAAAAAwABBAkAEQAOABYARgBGAEEAbQBwAGUAcgBzAGEAbgBkAFIAZQBnAHUAbABhAHIARgBGAEEAbQBwAGUAcgBzAGEAbgBkACAAUgBlAGcAdQBsAGEAcgBWAGUAcgBzAGkAbwBuACAAMAAuADEAIAA6ACAARgBGAEEAbQBwAGUAcgBzAGEAbgBkACAAUgBlAGcAdQBsAGEAckZGQW1wZXJzYW5kUmVndWxhckZGQW1wZXJzYW5kIFJlZ3VsYXJWZXJzaW9uIDAuMSA6IEZGQW1wZXJzYW5kIFJlZ3VsYXIAAAABAAMAAQAAAAwABAAgAAAABAAEAAEAAAAm//8AAAAm////2wABAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAEAQABAQETRkZBbXBlcnNhbmRSZWd1bGFyAAEBASf4GwD4HAL4HQP4HgSLf/p0+XIFHQAAAIoPHQAAAI0Rix0AAAIAEgAFAQEMHyoxOlZlcnNpb24gMC4xRkZBbXBlcnNhbmQgUmVndWxhckZGQW1wZXJzYW5kUmVndWxhcmFtcGVyc2FuZAAAAAGLAAICAAEALQFr+Lv4cIsV/CWLBYv5UAX4JYsFi/1QBfvf+RcVi/zeBfeZiwWL+N4F+5mLBQ75cvlZixUhiwX8EfgYBWyqdad+pAh+pISni6oIi4sFi6mSppqjCJqioJ6mmAimmKuSsYsIi4sFsIurhKZ+CKZ9n3iacwiac5JvimwIi4sFOIsFi6mConibCHiadJNxiwiLiwVsi3ODensIeXqCdotyCIuLBYt2kXaXdgiXdpx1onIIi4sF+Dj8PgX8Qn8Vi4sFXIthlGidCGecb6R4qwh3q4Gxi7YIi4sFi6ySqpmoCJinoKSmoQimoK2dspgIi4sFq5YFt1QFZX4FXXppdnVwCHRwgGyLZgiLiwWLcJJymHUImHWdeqJ+CKJ+poWqiwiLiwWyi66UqpwIqZyqpqqyCIuLBZmcmaCaogiaopqknKgIi4sFqsIF5IsFXjsFeWp5bHpwCHlweXJ5dgiLiwVlXWRqYncIYnZcgViLCA4CJwBLAt4AKgAAAAEAAAAAAAAAAQAQAAJlbgAA) format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0026;
+}
+@font-face {
+  font-family: "FFAmpersand";
+  src: url(data:font/ttf;base64,T1RUTwAKAIAAAwAgQ0ZGIF7XAdwAAATgAAAB+k9TLzJqDmSXAAABEAAAAGBjbWFwAAwAWQAABJQAAAAsaGVhZC+egJsAAACsAAAANmhoZWEG/wHyAAAA5AAAACRobXR4BScAbQAABtwAAAAIbHRhZ2V+AAQAAAbkAAAAEm1heHAAAlAAAAABCAAAAAZuYW1ls+hw2QAAAXAAAAMhcG9zdAADAAAAAATAAAAAIAABAAAAAQAAPiMRiV8PPPUAAwPoAAAAAOa1Hn8AAAAA5rUefwAo//UC9QLIAAAAAwACAAAAAAAAAAEAAAPg/soAAAMNACgAGAL1AAEAAAAAAAAAAAAAAAAAAAACAABQAAACAAAAAwMNAfQABQAAAooCuwAAAIwCigK7AAAB3wAxAQIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAWFhYWABAACYAJgPg/soAAALIAAsAAAABAAAAAAHwAsgAAAAAAAAAAAAzAmoAAAAEAAAAAAACADQAAAAEAAAAAQAWAAAAAAAEAAAAAgAIABYAAAAEAAAAAwAmAFQAAAAEAAAABAAgAB4AAAAEAAAABQAWAD4AAAAEAAAABgAeAAAAAAAEAAAABwACADQAAAAEAAAACAACADQAAAAEAAAACQACADQAAAAEAAAACgACADQAAAAEAAAACwACADQAAAAEAAAADAACADQAAAAEAAAADQACADQAAAAEAAAADgACADQAAAAEAAAAEAAWAAAAAAAEAAAAEQAIABYAAQAAAAAAAAABADUAAQAAAAAAAQALAHoAAQAAAAAAAgAEAIUAAQAAAAAAAwATAKQAAQAAAAAABAAQAIkAAQAAAAAABQALAJkAAQAAAAAABgAPAHoAAQAAAAAABwABADUAAQAAAAAACAABADUAAQAAAAAACQABADUAAQAAAAAACgABADUAAQAAAAAACwABADUAAQAAAAAADAABADUAAQAAAAAADQABADUAAQAAAAAADgABADUAAQAAAAAAEAALAHoAAQAAAAAAEQAEAIUAAwABBAkAAAACADQAAwABBAkAAQAWAAAAAwABBAkAAgAIABYAAwABBAkAAwAmAFQAAwABBAkABAAgAB4AAwABBAkABQAWAD4AAwABBAkABgAeAAAAAwABBAkABwACADQAAwABBAkACAACADQAAwABBAkACQACADQAAwABBAkACgACADQAAwABBAkACwACADQAAwABBAkADAACADQAAwABBAkADQACADQAAwABBAkADgACADQAAwABBAkAEAAWAAAAAwABBAkAEQAIABYARgBGAEEAbQBwAGUAcgBzAGEAbgBkAEIAbwBsAGQARgBGAEEAbQBwAGUAcgBzAGEAbgBkACAAQgBvAGwAZABWAGUAcgBzAGkAbwBuACAAMAAuADEAIAA6ACAARgBGAEEAbQBwAGUAcgBzAGEAbgBkACAAQgBvAGwAZEZGQW1wZXJzYW5kQm9sZEZGQW1wZXJzYW5kIEJvbGRWZXJzaW9uIDAuMSA6IEZGQW1wZXJzYW5kIEJvbGQAAAAAAAABAAMAAQAAAAwABAAgAAAABAAEAAEAAAAm//8AAAAm////2wABAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAEAQABAQEQRkZBbXBlcnNhbmRCb2xkAAEBASf4GwD4HAL4HQP4HgSLgPp0+aEFHQAAAIEPHQAAAIQRix0AAAH6EgAFAQEMHCcrNFZlcnNpb24gMC4xRkZBbXBlcnNhbmQgQm9sZEZGQW1wZXJzYW5kQm9sZGFtcGVyc2FuZAAAAAGLAAICAAEALQFu+K74aosV/CWLBYv5UAX4JYsFi/1QBfvf+RcVi/zeBfeZiwWL+N4F+5mLBQ75ofmJixX7NYsF/BD4DgVsqnamfqUIfqSFpYunCIuLBYurk6ibpQibpaOgqpoIqpqwkraLCIuLBbaLsIOpewioe6J2m3EImnGTbopqCIuLBfsViwWLo4SdfZcIfZd6kXaLCIuLBXSLeYV+fwh9foR7i3cIi4sFi3uQepV6CJV6mnegdgiLiwX4R/xGBfxlgBWLiwVYi16UZp0IZZxupHarCHargbGLtgiLiwWLrJKrmagImaigpKeiCKehrp20mAiLiwW+mwXGNwVdfAVifm15eHQId3SBcYttCIuLBYt2kHmVegiVepp9noEInoGihqWLCIuLBa+Lq5Oomwiom6alpq4Ii4sFl5uXnZefCJefl6GXpAiLiwWgtgX3HYsFaUYFemh6bHpuCHpueXJ4dQiLiwVlXGJoXnYIXnZXgFKLCA4AAAIaAEUDDQAoAAAAAQAAAAAAAAABABAAAmVuAAA=) format("truetype");
+  font-weight: 500 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0026;
+}
+
+/* ---------------------------------------------------------------------------
    Sistema de diseño — calcado del lenguaje visual de big.dk:
    blanco puro, negro puro, una grotesca neutra y una escala tipográfica que
    salta de 11px (interfaz) a 100px+ (titulares). Sin sombras, sin bordes
@@ -19,7 +48,8 @@
   --color-grey-700: #333333;
   --color-grey-800: #1b1b1b;
 
-  --font-sans: var(--font-grotesk), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "FFAmpersand", var(--font-grotesk), "Helvetica Neue", Arial,
+    sans-serif;
 
   /* Escala de interfaz: etiquetas, navegación, metadatos */
   --text-nav: 0.6875rem;      /* 11px */
@@ -219,5 +249,39 @@ html[data-intro="playing"] body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Cursor de seguimiento. `difference` lo invierte contra lo que tenga debajo,
+   así que se ve tanto sobre el papel como sobre una fotografía. Nunca
+   intercepta el ratón, y no existe en pantallas táctiles ni con movimiento
+   reducido, donde el componente ni se monta.
+--------------------------------------------------------------------------- */
+.ff-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-paper);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  will-change: transform;
+}
+
+/* Sobre algo pulsable el punto se vacía y queda como anillo fino. */
+.ff-cursor[data-anillo="si"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-paper);
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .ff-cursor {
+    display: none;
   }
 }

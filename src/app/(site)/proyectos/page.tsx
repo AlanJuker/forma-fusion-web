@@ -20,15 +20,25 @@ export default async function ProjectsPage({
 }) {
   const { categoria } = await searchParams;
 
-  const [projects, categories] = await Promise.all([
+  const [projects, categories, publicados] = await Promise.all([
     listPublishedProjects(repositories.projects, { categorySlug: categoria }),
     repositories.categories.findAll(),
+    // Sin filtrar, para saber qué categorías tienen obra publicada
+    listPublishedProjects(repositories.projects),
   ]);
+
+  // Solo se ofrecen filtros que llevan a algún sitio. El contador del
+  // repositorio incluye borradores, así que se calcula sobre lo publicado.
+  const conObra = new Set(
+    publicados.map((p) => p.category?.slug).filter(Boolean),
+  );
+  const filtros = categories.filter((c) => conObra.has(c.slug));
 
   return (
     <div className="pt-[calc(var(--header-height)+28px)] pb-24 md:pb-32">
       {/* Filtros alineados con la columna de texto de la lista, para que la
           retícula se lea como una sola desde arriba. */}
+      {filtros.length > 1 && (
       <div className="gutter-x mb-6">
         <div className="grid grid-cols-12 gap-x-4">
           <div className="col-span-12 col-start-1 flex flex-wrap gap-x-4 gap-y-2 md:col-span-8 md:col-start-3">
@@ -40,7 +50,7 @@ export default async function ProjectsPage({
             >
               Todos
             </Link>
-            {categories.map((category) => (
+            {filtros.map((category) => (
               <Link
                 key={category.id}
                 href={`/proyectos?categoria=${category.slug}`}
@@ -56,6 +66,7 @@ export default async function ProjectsPage({
           </div>
         </div>
       </div>
+      )}
 
       <h1 className="sr-only">Proyectos</h1>
       <ProjectList projects={projects} />

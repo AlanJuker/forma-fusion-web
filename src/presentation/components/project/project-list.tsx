@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { useRef } from "react";
 
 import type { Project } from "@/domain/entities/project";
 import { ProjectMark } from "@/presentation/components/ui/logo";
@@ -19,6 +20,98 @@ import { ProjectMark } from "@/presentation/components/ui/logo";
  *   columnas 5-7 → fotografía
  *   resto        → papel en blanco
  */
+/** Desplazamiento máximo de la fotografía, en píxeles. */
+const DESVIO = 9;
+
+/**
+ * Al recorrer una ficha con el ratón, su fotografía se desplaza unos píxeles
+ * hacia el lado del cursor. Es un gesto muy corto —nueve píxeles— que da
+ * profundidad sin llamar la atención. Se escribe directamente sobre el estilo
+ * del nodo, sin pasar por el estado de React, para no re-renderizar en cada
+ * movimiento del puntero.
+ */
+function useParallaxFoto() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const alMover = (event: React.MouseEvent<HTMLElement>) => {
+    const nodo = ref.current;
+    if (!nodo) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const caja = event.currentTarget.getBoundingClientRect();
+    const dx = (event.clientX - (caja.left + caja.width / 2)) / (caja.width / 2);
+    const dy = (event.clientY - (caja.top + caja.height / 2)) / (caja.height / 2);
+    nodo.style.transform = `translate3d(${(dx * DESVIO).toFixed(2)}px, ${(dy * DESVIO).toFixed(2)}px, 0)`;
+  };
+
+  const alSalir = () => {
+    const nodo = ref.current;
+    if (nodo) nodo.style.transform = "translate3d(0, 0, 0)";
+  };
+
+  return { ref, alMover, alSalir };
+}
+
+function FichaProyecto({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
+  const parallax = useParallaxFoto();
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{
+        duration: 0.9,
+        delay: index < 3 ? index * 0.09 : 0,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <Link
+        href={`/proyectos/${project.slug}`}
+        className="group grid grid-cols-12 gap-x-4 py-7 md:py-9"
+        onMouseMove={parallax.alMover}
+        onMouseLeave={parallax.alSalir}
+      >
+        <div className="col-span-5 col-start-1 flex flex-col items-end text-right md:col-span-2 md:col-start-3">
+          <ProjectMark
+            seed={index}
+            className="w-9 text-ink transition-opacity duration-500 group-hover:opacity-55 md:w-11"
+          />
+          <h3 className="mt-4 text-[15px] leading-[1.25] tracking-[-0.015em] transition-opacity duration-500 group-hover:opacity-55 md:mt-5 md:text-[17px]">
+            {project.title}
+          </h3>
+          <p className="ui-label mt-1.5 text-grey-500">{project.location}</p>
+        </div>
+
+        <div className="col-span-7 col-start-6 md:col-span-4 md:col-start-5">
+          <div className="media-zoom relative aspect-[16/9] w-full">
+            <div
+              ref={parallax.ref}
+              className="absolute inset-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            >
+              <Image
+                src={project.coverImage}
+                alt={project.title}
+                fill
+                sizes="(max-width: 768px) 58vw, 33vw"
+                className="object-cover"
+                quality={90}
+                style={{ objectPosition: project.coverPosition }}
+                priority={index < 3}
+              />
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.article>
+  );
+}
+
 export function ProjectList({ projects }: { projects: Project[] }) {
   if (projects.length === 0) {
     return (
@@ -35,59 +128,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
   return (
     <div className="gutter-x">
       {projects.map((project, index) => (
-        <motion.article
-          key={project.id}
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{
-            duration: 0.9,
-            // Las primeras entradas ya están en pantalla al terminar la intro:
-            // se escalonan para que aparezcan detrás del telón, no de golpe.
-            delay: index < 3 ? index * 0.09 : 0,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
-          <Link
-            href={`/proyectos/${project.slug}`}
-            className="group grid grid-cols-12 gap-x-4 py-7 md:py-9"
-          >
-            {/* Texto: alineado a la derecha, contra la fotografía */}
-            <div className="col-span-5 col-start-1 flex flex-col items-end text-right md:col-span-2 md:col-start-3">
-              {/* El glifo se elige por posición, no por el slug: con doce
-                  dibujos y un puñado de proyectos, un hash acaba repitiendo
-                  marca en dos fichas contiguas. Por índice, la página siempre
-                  muestra marcas distintas. */}
-              <ProjectMark
-                seed={index}
-                className="w-9 text-ink transition-opacity duration-500 group-hover:opacity-55 md:w-11"
-              />
-              <h3 className="mt-4 text-[15px] leading-[1.25] tracking-[-0.015em] transition-opacity duration-500 group-hover:opacity-55 md:mt-5 md:text-[17px]">
-                {project.title}
-              </h3>
-              <p className="ui-label mt-1.5 text-grey-500">{project.location}</p>
-            </div>
-
-            {/* Fotografía */}
-            <div className="col-span-7 col-start-6 md:col-span-4 md:col-start-5">
-              <div className="media-zoom relative aspect-[16/9] w-full">
-                <Image
-                  src={project.coverImage}
-                  alt={project.title}
-                  fill
-                  sizes="(max-width: 768px) 58vw, 33vw"
-                  className="object-cover"
-                  quality={90}
-                  // El recorte respeta el encuadre elegido para cada proyecto:
-                  // una fotografía vertical en un marco apaisado pierde dos
-                  // tercios de la imagen, y por defecto se llevaría el edificio.
-                  style={{ objectPosition: project.coverPosition }}
-                  priority={index < 3}
-                />
-              </div>
-            </div>
-          </Link>
-        </motion.article>
+        <FichaProyecto key={project.id} project={project} index={index} />
       ))}
     </div>
   );

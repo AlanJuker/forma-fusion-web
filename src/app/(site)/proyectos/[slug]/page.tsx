@@ -60,12 +60,13 @@ export default async function ProjectDetailPage({ params }: Params) {
 
   return (
     <article className="pt-[calc(var(--header-height)+28px)] pb-24 md:pb-32">
-      {/* Todo vive dentro de la misma banda de contenido que el índice. La
-          fotografía no va a sangre: el material original ronda los 720 px de
-          ancho y estirarlo a pantalla completa lo deja blando. */}
+      {/* Banda de seis columnas centrada en la retícula (4 a 9): la ficha se
+          lee como una página, no como una columna corrida a un lado. La
+          fotografía no va a sangre porque el material original ronda los 720 px
+          de ancho y estirarlo a pantalla completa lo deja blando. */}
       <header className="gutter-x">
         <div className="grid grid-cols-12 gap-x-4">
-          <div className="col-span-12 md:col-span-6 md:col-start-3">
+          <div className="col-span-12 md:col-span-6 md:col-start-4">
             <Reveal>
               <p className="ui-label text-grey-400">
                 {project.category?.name ?? "Proyecto"}
@@ -80,7 +81,7 @@ export default async function ProjectDetailPage({ params }: Params) {
 
       <div className="gutter-x mt-8 md:mt-10">
         <div className="grid grid-cols-12 gap-x-4">
-          <Reveal delay={0.1} className="col-span-12 md:col-span-6 md:col-start-3">
+          <Reveal delay={0.1} className="col-span-12 md:col-span-6 md:col-start-4">
             <div className="media-zoom relative aspect-[3/2] w-full">
               <Image
                 src={project.coverImage}
@@ -100,7 +101,7 @@ export default async function ProjectDetailPage({ params }: Params) {
       {/* Resumen y ficha técnica */}
       <div className="gutter-x mt-10 md:mt-14">
         <div className="grid grid-cols-12 gap-x-4 gap-y-10">
-          <div className="col-span-12 md:col-span-3 md:col-start-3">
+          <div className="col-span-12 md:col-span-3 md:col-start-4">
             {resumen && (
               <Reveal>
                 <p className="text-[18px] text-grey-700">{resumen}</p>
@@ -122,7 +123,7 @@ export default async function ProjectDetailPage({ params }: Params) {
             )}
           </div>
 
-          <div className="col-span-12 md:col-span-2 md:col-start-7">
+          <div className="col-span-12 md:col-span-3 md:col-start-7">
             <Reveal delay={0.12}>
               <dl>
                 {facts.map((fact) => (
@@ -144,7 +145,7 @@ export default async function ProjectDetailPage({ params }: Params) {
       {project.images.length > 0 && (
         <section className="gutter-x mt-14 md:mt-20">
           <div className="grid grid-cols-12 gap-x-4">
-            <div className="col-span-12 grid grid-cols-2 gap-4 md:col-span-6 md:col-start-3">
+            <div className="col-span-12 grid grid-cols-2 gap-4 md:col-span-6 md:col-start-4">
               {project.images.map((image) => (
                 <Reveal key={image.id} delay={0.04}>
                   <figure className="group">
@@ -175,7 +176,7 @@ export default async function ProjectDetailPage({ params }: Params) {
         <section className="rule-t mt-20 pt-14 md:mt-28">
           <div className="gutter-x mb-6">
             <div className="grid grid-cols-12 gap-x-4">
-              <div className="col-span-12 flex items-baseline justify-between md:col-span-6 md:col-start-3">
+              <div className="col-span-12 flex items-baseline justify-between md:col-span-6 md:col-start-4">
                 <p className="ui-label text-grey-400">Otros proyectos</p>
                 <Link href="/proyectos" className="ui-label link-underline">
                   Ver todos
