@@ -1,79 +1,43 @@
 /**
- * Logotipo "F&F" modular.
+ * Logotipo "F&F".
  *
- * Construido solo con rectángulos sobre una retícula, sin una sola curva, en el
- * mismo lenguaje que el logotipo del sitio de referencia: trazo grueso,
- * contraformas cuadradas y ángulos exclusivamente de 90°.
+ * Las efes son modulares —solo rectángulos y ángulos de 90°, en el lenguaje del
+ * sitio de referencia— y el ampersand es el de Space Grotesk, la tipografía del
+ * propio sitio, en su peso más grueso.
  *
- * Las efes se describen con rectángulos directos; el ampersand, con una matriz
- * de celdas, porque su forma no se deja resumir en tres barras. Las celdas
- * contiguas de una misma fila se fusionan en un solo rectángulo, así el SVG
- * queda con pocas formas y sin costuras visibles entre ellas.
+ * Se probó a dibujar también el ampersand con rectángulos, pero un "&" es una
+ * forma con curvas y una diagonal cruzada: aproximarla con celdas daba un signo
+ * que no se leía. El contorno va incrustado como `path`, extraído una vez de la
+ * fuente, así que no depende de que la tipografía llegue a cargar y conserva el
+ * mismo grosor óptico que las astas de las efes.
  */
 
 const STROKE = 2.6;
-const ARM_TOP = 7; // el brazo superior abarca todo el ancho de la letra
+const ARM_TOP = 7; // el brazo superior abarca todo el ancho de la letra (7)
 const ARM_MID = 5.2; // el central es más corto, como en una F clásica
 const MID_Y = 3.9;
-const LETTER_W = 7;
 const HEIGHT = 10;
 
-/** Ampersand: 7 columnas × 9 filas. La celda suelta de la última fila es la
- *  cola, y es lo que impide que se lea como un ocho. */
-const AMPERSAND = [
-  "..####.",
-  ".##..##",
-  ".##..##",
-  "..####.",
-  ".####..",
-  "##..##.",
-  "##...##",
-  "##...##",
-  ".####.#",
-];
+/** Contorno del "&", normalizado a la altura de mayúsculas del logotipo. */
+const AMPERSAND_PATH =
+  "M6.929 0L3.357 0Q2.471 0 1.807-0.321Q1.143-0.643 0.771-1.250Q0.400-1.857 0.400-2.700Q0.400-3.314 0.621-3.771Q0.843-4.229 1.229-4.529Q1.614-4.829 2.086-4.971L2.086-5.171Q1.371-5.386 0.914-5.914Q0.457-6.443 0.457-7.314Q0.457-8.186 0.843-8.786Q1.229-9.386 1.893-9.693Q2.557-10 3.414-10L4.971-10L4.971-8.514L3.743-8.514Q3.100-8.514 2.679-8.171Q2.257-7.829 2.257-7.157Q2.257-6.686 2.464-6.386Q2.671-6.086 3.007-5.943Q3.343-5.800 3.743-5.800L5.129-5.800L5.129-7.086L6.929-7.086L6.929-5.800L8.243-5.800L8.243-4.314L6.929-4.314L6.929 0M3.686-1.486L5.129-1.486L5.129-4.314L3.686-4.314Q3.057-4.314 2.629-3.957Q2.200-3.600 2.200-2.900Q2.200-2.186 2.650-1.836Q3.100-1.486 3.686-1.486";
 
-// El ampersand ocupa el 80% del alto de las letras y se centra respecto a
-// ellas, como corresponde tipográficamente a un signo entre mayúsculas.
-const AMP_ROWS = AMPERSAND.length;
-const AMP_COLS = AMPERSAND[0].length;
-const AMP_UNIT = (HEIGHT * 0.8) / AMP_ROWS;
-const AMP_W = AMP_COLS * AMP_UNIT;
-const AMP_Y = (HEIGHT - AMP_ROWS * AMP_UNIT) / 2;
-const GAP = 1.1;
+// Colocación del signo. Los valores salen de medir el contorno del glifo
+// (su caja es x 0.40→8.24 con la línea base en y = 0) y se dejan resueltos:
+// la escala lo deja algo por debajo del alto de las letras, como corresponde
+// tipográficamente, y la traslación lo centra en vertical.
+const AMP_SCALE = 0.92;
+const AMP_X = 7.632;
+const AMP_BASELINE_Y = 9.6;
 
-const AMP_X = LETTER_W + GAP;
-const SECOND_F_X = AMP_X + AMP_W + GAP;
-const TOTAL_W = SECOND_F_X + LETTER_W;
+const SECOND_F_X = 16.215;
+const TOTAL_W = 23.215;
 
 interface Rect {
   x: number;
   y: number;
   w: number;
   h: number;
-}
-
-/** Fusiona celdas contiguas de cada fila para emitir menos rectángulos. */
-function matrixToRects(rows: string[], originX: number, originY: number, unit: number): Rect[] {
-  const rects: Rect[] = [];
-  rows.forEach((row, y) => {
-    let x = 0;
-    while (x < row.length) {
-      if (row[x] === "#") {
-        let width = 0;
-        while (x + width < row.length && row[x + width] === "#") width += 1;
-        rects.push({
-          x: originX + x * unit,
-          y: originY + y * unit,
-          w: width * unit,
-          h: unit,
-        });
-        x += width;
-      } else {
-        x += 1;
-      }
-    }
-  });
-  return rects;
 }
 
 function efRects(x: number): Rect[] {
@@ -84,11 +48,7 @@ function efRects(x: number): Rect[] {
   ];
 }
 
-const LOGO_RECTS: Rect[] = [
-  ...efRects(0),
-  ...matrixToRects(AMPERSAND, AMP_X, AMP_Y, AMP_UNIT),
-  ...efRects(SECOND_F_X),
-];
+const LOGO_RECTS: Rect[] = [...efRects(0), ...efRects(SECOND_F_X)];
 
 export function LogoFF({
   className,
@@ -106,11 +66,13 @@ export function LogoFF({
       className={className}
       // Alto controlado por CSS; el ancho sigue la proporción del viewBox.
       style={{ display: "block", height: "1em", width: "auto" }}
-      shapeRendering="crispEdges"
     >
       {LOGO_RECTS.map((r) => (
         <rect key={`${r.x}-${r.y}-${r.w}`} x={r.x} y={r.y} width={r.w} height={r.h} />
       ))}
+      <g transform={`translate(${AMP_X} ${AMP_BASELINE_Y}) scale(${AMP_SCALE})`}>
+        <path d={AMPERSAND_PATH} />
+      </g>
     </svg>
   );
 }
