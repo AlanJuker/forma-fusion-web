@@ -15,9 +15,8 @@ export default async function SiteLayout({
 }) {
   // El menú y el pie son iguales en todo el sitio, así que se resuelven una
   // sola vez aquí en lugar de en cada página.
-  const [categories, offices, settings] = await Promise.all([
+  const [categories, settings] = await Promise.all([
     repositories.categories.findTree(),
-    repositories.offices.findMany(),
     repositories.settings.getAll(),
   ]);
 
@@ -34,7 +33,7 @@ export default async function SiteLayout({
         <main className="min-h-screen">
           <PageTransition>{children}</PageTransition>
         </main>
-        <SiteFooter offices={offices} settings={settings} />
+        <SiteFooter settings={settings} />
       </MotionProvider>
     </>
   );

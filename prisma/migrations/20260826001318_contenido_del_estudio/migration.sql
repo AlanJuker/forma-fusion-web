@@ -1,11 +1,8 @@
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
-
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('ADMIN', 'EDITOR');
 
 -- CreateEnum
-CREATE TYPE "ProjectStatus" AS ENUM ('CONCEPT', 'IN_PROGRESS', 'COMPLETED');
+CREATE TYPE "ProjectStatus" AS ENUM ('DELIVERED', 'IN_OPERATION', 'FOR_SALE', 'IN_PROGRESS');
 
 -- CreateEnum
 CREATE TYPE "PublishState" AS ENUM ('DRAFT', 'PUBLISHED');
@@ -47,7 +44,7 @@ CREATE TABLE "projects" (
     "size" TEXT,
     "client" TEXT,
     "collaborators" TEXT,
-    "status" "ProjectStatus" NOT NULL DEFAULT 'COMPLETED',
+    "status" "ProjectStatus" NOT NULL DEFAULT 'DELIVERED',
     "state" "PublishState" NOT NULL DEFAULT 'DRAFT',
     "featured" BOOLEAN NOT NULL DEFAULT false,
     "order" INTEGER NOT NULL DEFAULT 0,
@@ -71,53 +68,6 @@ CREATE TABLE "project_images" (
     "projectId" TEXT NOT NULL,
 
     CONSTRAINT "project_images_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "news_posts" (
-    "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
-    "excerpt" TEXT,
-    "body" TEXT,
-    "coverImage" TEXT,
-    "state" "PublishState" NOT NULL DEFAULT 'DRAFT',
-    "publishedAt" TIMESTAMP(3),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "news_posts_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "team_members" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "role" TEXT NOT NULL,
-    "bio" TEXT,
-    "photo" TEXT,
-    "email" TEXT,
-    "order" INTEGER NOT NULL DEFAULT 0,
-    "visible" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "team_members_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "offices" (
-    "id" TEXT NOT NULL,
-    "city" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
-    "country" TEXT NOT NULL,
-    "phone" TEXT,
-    "email" TEXT,
-    "order" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "offices_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -165,12 +115,6 @@ CREATE INDEX "projects_state_order_idx" ON "projects"("state", "order");
 CREATE INDEX "project_images_projectId_idx" ON "project_images"("projectId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "news_posts_slug_key" ON "news_posts"("slug");
-
--- CreateIndex
-CREATE INDEX "news_posts_state_publishedAt_idx" ON "news_posts"("state", "publishedAt");
-
--- CreateIndex
 CREATE INDEX "contact_messages_read_createdAt_idx" ON "contact_messages"("read", "createdAt");
 
 -- AddForeignKey
@@ -181,4 +125,3 @@ ALTER TABLE "projects" ADD CONSTRAINT "projects_categoryId_fkey" FOREIGN KEY ("c
 
 -- AddForeignKey
 ALTER TABLE "project_images" ADD CONSTRAINT "project_images_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-

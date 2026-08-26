@@ -44,3 +44,6 @@ yarn-error.log*
 
 # material de referencia local (vídeos, capturas): no forma parte del producto
 /inspiration
+
+# documento fuente del contenido (material de trabajo)
+*.docx

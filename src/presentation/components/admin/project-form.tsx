@@ -5,7 +5,11 @@ import { useActionState } from "react";
 
 import { saveProject, type ActionState } from "@/app/admin/actions";
 import type { Category } from "@/domain/entities/content";
-import type { Project } from "@/domain/entities/project";
+import {
+  COVER_POSITION_OPTIONS,
+  PROJECT_STATUS_OPTIONS,
+  type Project,
+} from "@/domain/entities/project";
 
 import {
   Card,
@@ -96,6 +100,13 @@ export function ProjectForm({
             defaultValue={project?.coverImage}
             placeholder="https://images.unsplash.com/..."
           />
+          <SelectField
+            label="Encuadre de la portada"
+            name="coverPosition"
+            defaultValue={project?.coverPosition ?? "center"}
+            options={[...COVER_POSITION_OPTIONS]}
+            hint="Qué zona se conserva al recortar. Útil en fotos verticales, donde el centro deja el edificio fuera."
+          />
           <Field
             label="Galería"
             name="gallery"
@@ -141,12 +152,8 @@ export function ProjectForm({
           <SelectField
             label="Estado de obra"
             name="status"
-            defaultValue={project?.status ?? "COMPLETED"}
-            options={[
-              { value: "CONCEPT", label: "Concepto" },
-              { value: "IN_PROGRESS", label: "En construcción" },
-              { value: "COMPLETED", label: "Finalizado" },
-            ]}
+            defaultValue={project?.status ?? "DELIVERED"}
+            options={PROJECT_STATUS_OPTIONS}
           />
           <SelectField
             label="Categoría"

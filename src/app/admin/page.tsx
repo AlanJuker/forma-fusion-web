@@ -9,23 +9,18 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboard() {
   const session = await requireSession();
 
-  const [projects, drafts, news, team, messages, unread, categories] =
-    await Promise.all([
-      repositories.projects.count(),
-      repositories.projects.count({ state: "DRAFT" }),
-      repositories.news.findMany(),
-      repositories.team.findMany(),
-      repositories.contact.findMany(),
-      repositories.contact.countUnread(),
-      repositories.categories.findAll(),
-    ]);
+  const [projects, drafts, messages, unread, categories] = await Promise.all([
+    repositories.projects.count(),
+    repositories.projects.count({ state: "DRAFT" }),
+    repositories.contact.findMany(),
+    repositories.contact.countUnread(),
+    repositories.categories.findAll(),
+  ]);
 
   const stats = [
     { label: "Proyectos", value: projects, href: "/admin/proyectos" },
     { label: "Borradores", value: drafts, href: "/admin/proyectos" },
-    { label: "Noticias", value: news.length, href: "/admin/noticias" },
     { label: "Categorías", value: categories.length, href: "/admin/categorias" },
-    { label: "Equipo", value: team.length, href: "/admin/equipo" },
     { label: "Sin leer", value: unread, href: "/admin/mensajes" },
   ];
 
@@ -38,7 +33,7 @@ export default async function AdminDashboard() {
         description="Resumen del contenido publicado en el sitio."
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
             <Card className="p-4 transition-colors hover:border-ink">
@@ -54,7 +49,7 @@ export default async function AdminDashboard() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="ui-label text-grey-500">Proyectos recientes</h2>
+            <h2 className="ui-label text-grey-500">Proyectos</h2>
             <Link href="/admin/proyectos" className="ui-label link-underline">
               Ver todos
             </Link>

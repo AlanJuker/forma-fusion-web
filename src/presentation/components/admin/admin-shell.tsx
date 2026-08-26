@@ -11,9 +11,6 @@ const NAV = [
   { href: "/admin", label: "Resumen", exact: true },
   { href: "/admin/proyectos", label: "Proyectos" },
   { href: "/admin/categorias", label: "Categorías" },
-  { href: "/admin/noticias", label: "Noticias" },
-  { href: "/admin/equipo", label: "Equipo" },
-  { href: "/admin/oficinas", label: "Oficinas" },
   { href: "/admin/mensajes", label: "Mensajes", badge: true },
   { href: "/admin/ajustes", label: "Ajustes" },
 ];

@@ -3,7 +3,12 @@
  * Sin dependencias de framework ni de ORM — es el modelo que usa el negocio.
  */
 
-export type ProjectStatus = "CONCEPT" | "IN_PROGRESS" | "COMPLETED";
+export type ProjectStatus =
+  | "DELIVERED"
+  | "IN_OPERATION"
+  | "FOR_SALE"
+  | "IN_PROGRESS";
+
 export type PublishState = "DRAFT" | "PUBLISHED";
 
 export interface ProjectImage {
@@ -36,23 +41,40 @@ export interface Project {
   excerpt: string | null;
   description: string | null;
   coverImage: string;
+  coverPosition: string;
   category: ProjectCategoryRef | null;
   images: ProjectImage[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-/** Etiqueta legible del estado de obra, en español. */
+/** Etiqueta del estado, con la misma redacción que emplea el estudio. */
 export function projectStatusLabel(status: ProjectStatus): string {
   switch (status) {
-    case "CONCEPT":
-      return "Concepto";
+    case "DELIVERED":
+      return "Entregado";
+    case "IN_OPERATION":
+      return "Entregado — En funcionamiento";
+    case "FOR_SALE":
+      return "En venta";
     case "IN_PROGRESS":
-      return "En construcción";
-    case "COMPLETED":
-      return "Finalizado";
+      return "En ejecución";
   }
 }
+
+/** Encuadres admitidos al recortar la portada. */
+export const COVER_POSITION_OPTIONS = [
+  { value: "center", label: "Centrado" },
+  { value: "top", label: "Parte superior" },
+  { value: "bottom", label: "Parte inferior" },
+] as const;
+
+export const PROJECT_STATUS_OPTIONS: { value: ProjectStatus; label: string }[] = [
+  { value: "DELIVERED", label: "Entregado" },
+  { value: "IN_OPERATION", label: "Entregado — En funcionamiento" },
+  { value: "FOR_SALE", label: "En venta" },
+  { value: "IN_PROGRESS", label: "En ejecución" },
+];
 
 /** Un proyecto es visible al público solo si está publicado. */
 export function isPubliclyVisible(project: Pick<Project, "state">): boolean {

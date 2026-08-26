@@ -60,6 +60,7 @@ export default async function ProjectDetailPage({ params }: Params) {
           priority
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: project.coverPosition }}
         />
       </div>
 

@@ -1,6 +1,4 @@
-/** Entidades de dominio para el resto del contenido editorial del sitio. */
-
-import type { PublishState } from "./project";
+/** Entidades de dominio del resto del contenido del sitio. */
 
 export interface Category {
   id: string;
@@ -11,40 +9,6 @@ export interface Category {
   parentId: string | null;
   children: Category[];
   projectCount?: number;
-}
-
-export interface NewsPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  body: string | null;
-  coverImage: string | null;
-  state: PublishState;
-  publishedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  bio: string | null;
-  photo: string | null;
-  email: string | null;
-  order: number;
-  visible: boolean;
-}
-
-export interface Office {
-  id: string;
-  city: string;
-  address: string;
-  country: string;
-  phone: string | null;
-  email: string | null;
-  order: number;
 }
 
 export interface ContactMessage {

@@ -77,6 +77,10 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                   fill
                   sizes="(max-width: 768px) 60vw, 25vw"
                   className="object-cover"
+                  // El recorte respeta el encuadre elegido para cada proyecto:
+                  // una fotografía vertical en un marco apaisado pierde dos
+                  // tercios de la imagen, y por defecto se llevaría el edificio.
+                  style={{ objectPosition: project.coverPosition }}
                   priority={index < 3}
                 />
               </div>

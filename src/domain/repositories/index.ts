@@ -7,14 +7,7 @@
  */
 
 import type { Project, PublishState } from "../entities/project";
-import type {
-  Category,
-  ContactMessage,
-  NewsPost,
-  Office,
-  TeamMember,
-  User,
-} from "../entities/content";
+import type { Category, ContactMessage, User } from "../entities/content";
 
 export interface ProjectFilter {
   state?: PublishState;
@@ -40,6 +33,7 @@ export interface ProjectInput {
   excerpt?: string | null;
   description?: string | null;
   coverImage: string;
+  coverPosition?: string;
   categoryId?: string | null;
   images?: { url: string; caption?: string | null; alt?: string | null; order: number }[];
 }
@@ -64,47 +58,10 @@ export interface CategoryRepository {
   delete(id: string): Promise<void>;
 }
 
-export interface NewsInput {
-  title: string;
-  slug: string;
-  excerpt?: string | null;
-  body?: string | null;
-  coverImage?: string | null;
-  state: PublishState;
-  publishedAt?: Date | null;
-}
-
-export interface NewsRepository {
-  findMany(filter?: { state?: PublishState; take?: number }): Promise<NewsPost[]>;
-  findBySlug(slug: string): Promise<NewsPost | null>;
-  findById(id: string): Promise<NewsPost | null>;
-  create(input: NewsInput): Promise<NewsPost>;
-  update(id: string, input: Partial<NewsInput>): Promise<NewsPost>;
-  delete(id: string): Promise<void>;
-}
-
-export interface TeamRepository {
-  findMany(onlyVisible?: boolean): Promise<TeamMember[]>;
-  findById(id: string): Promise<TeamMember | null>;
-  create(input: Omit<TeamMember, "id">): Promise<TeamMember>;
-  update(id: string, input: Partial<Omit<TeamMember, "id">>): Promise<TeamMember>;
-  delete(id: string): Promise<void>;
-}
-
-export interface OfficeRepository {
-  findMany(): Promise<Office[]>;
-  findById(id: string): Promise<Office | null>;
-  create(input: Omit<Office, "id">): Promise<Office>;
-  update(id: string, input: Partial<Omit<Office, "id">>): Promise<Office>;
-  delete(id: string): Promise<void>;
-}
-
 export interface ContactRepository {
   findMany(filter?: { read?: boolean }): Promise<ContactMessage[]>;
   countUnread(): Promise<number>;
-  create(
-    input: Omit<ContactMessage, "id" | "read" | "createdAt">,
-  ): Promise<ContactMessage>;
+  create(input: Omit<ContactMessage, "id" | "read" | "createdAt">): Promise<ContactMessage>;
   markAsRead(id: string, read: boolean): Promise<ContactMessage>;
   delete(id: string): Promise<void>;
 }

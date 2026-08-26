@@ -10,9 +10,8 @@ import { LogoFF } from "@/presentation/components/ui/logo";
 
 const NAV_LINKS = [
   { label: "Proyectos", href: "/proyectos", hasMenu: true },
-  { label: "Servicios", href: "/servicios", hasMenu: false },
+  { label: "Qué hacemos", href: "/servicios", hasMenu: false },
   { label: "Estudio", href: "/estudio", hasMenu: false },
-  { label: "Noticias", href: "/noticias", hasMenu: false },
   { label: "Contacto", href: "/contacto", hasMenu: false },
 ];
 

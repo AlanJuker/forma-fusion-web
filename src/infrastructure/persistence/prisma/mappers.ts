@@ -6,23 +6,13 @@
 import type {
   Category as PrismaCategory,
   ContactMessage as PrismaContact,
-  NewsPost as PrismaNews,
-  Office as PrismaOffice,
   Project as PrismaProject,
   ProjectImage as PrismaProjectImage,
-  TeamMember as PrismaTeam,
   User as PrismaUser,
 } from "@prisma/client";
 
 import type { Project } from "@/domain/entities/project";
-import type {
-  Category,
-  ContactMessage,
-  NewsPost,
-  Office,
-  TeamMember,
-  User,
-} from "@/domain/entities/content";
+import type { Category, ContactMessage, User } from "@/domain/entities/content";
 
 type PrismaProjectFull = PrismaProject & {
   category?: PrismaCategory | null;
@@ -46,6 +36,7 @@ export function toProject(row: PrismaProjectFull): Project {
     excerpt: row.excerpt,
     description: row.description,
     coverImage: row.coverImage,
+    coverPosition: row.coverPosition,
     category: row.category
       ? { id: row.category.id, name: row.category.name, slug: row.category.slug }
       : null,
@@ -82,45 +73,8 @@ export function toCategory(row: PrismaCategoryTree): Category {
   };
 }
 
-export function toNews(row: PrismaNews): NewsPost {
-  return {
-    id: row.id,
-    title: row.title,
-    slug: row.slug,
-    excerpt: row.excerpt,
-    body: row.body,
-    coverImage: row.coverImage,
-    state: row.state,
-    publishedAt: row.publishedAt,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-  };
-}
 
-export function toTeamMember(row: PrismaTeam): TeamMember {
-  return {
-    id: row.id,
-    name: row.name,
-    role: row.role,
-    bio: row.bio,
-    photo: row.photo,
-    email: row.email,
-    order: row.order,
-    visible: row.visible,
-  };
-}
 
-export function toOffice(row: PrismaOffice): Office {
-  return {
-    id: row.id,
-    city: row.city,
-    address: row.address,
-    country: row.country,
-    phone: row.phone,
-    email: row.email,
-    order: row.order,
-  };
-}
 
 export function toContactMessage(row: PrismaContact): ContactMessage {
   return {

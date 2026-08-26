@@ -33,7 +33,7 @@ adentro. El dominio no sabe que existen Prisma ni Next.js.
 ```
 src/
 ├── domain/                 # Núcleo: no importa nada externo
-│   ├── entities/           #   Project, Category, NewsPost, TeamMember…
+│   ├── entities/           #   Project, Category, ContactMessage, User
 │   ├── repositories/       #   Puertos (interfaces) de persistencia
 │   └── value-objects/      #   slug
 │
@@ -105,16 +105,15 @@ solo servicio y un solo despliegue en lugar de dos aplicaciones separadas.
 |---|---|
 | **Resumen** | Contadores de contenido, últimos proyectos y mensajes |
 | **Proyectos** | CRUD completo: ficha técnica, galería, portada, destacado, borrador/publicado |
-| **Categorías** | Alimentan el mega-menú y los filtros del sitio, con jerarquía padre/hijo |
-| **Noticias** | Editor de publicaciones con borrador y fecha automática al publicar |
-| **Equipo** | Miembros del estudio mostrados en la página *Estudio* |
-| **Oficinas** | Direcciones del pie de página y de *Contacto* |
+| **Categorías** | Alimentan el menú y los filtros del sitio |
 | **Mensajes** | Bandeja del formulario de contacto, con marcado de leído |
-| **Ajustes** | Correo, teléfono, Instagram, WhatsApp y lema del pie |
+| **Ajustes** | Correo, teléfono, Instagram, WhatsApp y dirección |
 
-Las imágenes se gestionan por URL (Unsplash, Cloudinary o cualquier CDN). No hay
-subida de archivos: en Railway el sistema de ficheros es efímero y un fichero
-subido desaparecería en el siguiente despliegue.
+Las imágenes se gestionan por URL. Las fotografías de los proyectos publicados
+viven en `public/proyectos` y se despliegan con el repositorio; para material
+nuevo sirve cualquier URL pública (Cloudinary, S3…). No hay subida de archivos
+desde el panel: en Railway el sistema de ficheros es efímero y un fichero subido
+desaparecería en el siguiente despliegue.
 
 ---
 
@@ -172,13 +171,21 @@ apunta a ese mismo puerto (8080); si se cambia, hay que actualizarlo con
 
 ---
 
-## Contenido de demostración
+## Contenido
 
-Los ocho proyectos, las noticias y el equipo son **ficticios**, y las fotografías
-provienen de Unsplash. Están pensados para reemplazarse desde `/admin` por el
-material real del estudio.
+Los textos (misión, visión, valores, quiénes somos, qué hacemos, propuesta de
+valor) y los cinco proyectos provienen del documento del estudio. Las
+fotografías salieron de ese mismo documento y están en `public/proyectos`.
 
-El único dato tomado del perfil real
-([@formafusion.ec](https://www.instagram.com/formafusion.ec/)) es el
-posicionamiento —estudio de diseño y construcción en Ecuador— y el enlace de
-WhatsApp, ambos editables en *Ajustes*.
+El sitio contiene **solo** las secciones de ese documento. Se retiraron las de
+la primera versión que no figuraban en él (noticias, equipo, oficinas y páginas
+legales). La página de contacto se conserva por decisión del estudio, aunque el
+documento no la recoja, para que el sitio tenga una vía de conversión.
+
+### Cómo se publica el contenido
+
+`prisma/seed.ts` corre en cada arranque, pero solo actúa si `contentVersion` de
+los ajustes no coincide con la constante `CONTENT_VERSION` del archivo. Es
+decir: sube esa constante cuando cambies textos o proyectos en el código y el
+siguiente despliegue los republicará; si no, el seed no toca nada y lo editado
+desde `/admin` permanece intacto.

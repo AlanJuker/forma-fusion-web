@@ -16,10 +16,12 @@ enum Role {
   EDITOR
 }
 
+/// Estados tal y como los nombra el estudio en su documentación.
 enum ProjectStatus {
-  CONCEPT
-  IN_PROGRESS
-  COMPLETED
+  DELIVERED // Entregado
+  IN_OPERATION // Entregado – En funcionamiento
+  FOR_SALE // En venta
+  IN_PROGRESS // En ejecución
 }
 
 enum PublishState {
@@ -40,43 +42,47 @@ model User {
 }
 
 model Category {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   name        String
-  slug        String    @unique
+  slug        String     @unique
   description String?
-  order       Int       @default(0)
+  order       Int        @default(0)
   parentId    String?
-  parent      Category? @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
   children    Category[] @relation("CategoryTree")
   projects    Project[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@index([parentId])
   @@map("categories")
 }
 
 model Project {
-  id          String        @id @default(cuid())
-  title       String
-  slug        String        @unique
-  location    String
-  year        Int
-  size        String?
-  client      String?
+  id            String         @id @default(cuid())
+  title         String
+  slug          String         @unique
+  location      String
+  year          Int
+  size          String?
+  client        String?
   collaborators String?
-  status      ProjectStatus @default(COMPLETED)
-  state       PublishState  @default(DRAFT)
-  featured    Boolean       @default(false)
-  order       Int           @default(0)
-  excerpt     String?
-  description String?       @db.Text
-  coverImage  String
-  categoryId  String?
-  category    Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  images      ProjectImage[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  status        ProjectStatus  @default(DELIVERED)
+  state         PublishState   @default(DRAFT)
+  featured      Boolean        @default(false)
+  order         Int            @default(0)
+  excerpt       String?
+  description   String?        @db.Text
+  coverImage    String
+  /// Qué zona de la portada se conserva al recortarla en marcos apaisados.
+  /// Importa en fotografías verticales, donde el recorte central deja fuera
+  /// el edificio.
+  coverPosition String         @default("center")
+  categoryId    String?
+  category      Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  images        ProjectImage[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@index([categoryId])
   @@index([state, order])
@@ -94,51 +100,6 @@ model ProjectImage {
 
   @@index([projectId])
   @@map("project_images")
-}
-
-model NewsPost {
-  id          String       @id @default(cuid())
-  title       String
-  slug        String       @unique
-  excerpt     String?
-  body        String?      @db.Text
-  coverImage  String?
-  state       PublishState @default(DRAFT)
-  publishedAt DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  @@index([state, publishedAt])
-  @@map("news_posts")
-}
-
-model TeamMember {
-  id        String   @id @default(cuid())
-  name      String
-  role      String
-  bio       String?  @db.Text
-  photo     String?
-  email     String?
-  order     Int      @default(0)
-  visible   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("team_members")
-}
-
-model Office {
-  id        String   @id @default(cuid())
-  city      String
-  address   String
-  country   String
-  phone     String?
-  email     String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("offices")
 }
 
 model ContactMessage {

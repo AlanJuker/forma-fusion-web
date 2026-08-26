@@ -3,38 +3,19 @@
 import type { Prisma } from "@prisma/client";
 
 import type { Project } from "@/domain/entities/project";
-import type {
-  Category,
-  ContactMessage,
-  NewsPost,
-  Office,
-  TeamMember,
-  User,
-} from "@/domain/entities/content";
+import type { Category, ContactMessage, User } from "@/domain/entities/content";
 import type {
   CategoryRepository,
   ContactRepository,
-  NewsInput,
-  NewsRepository,
-  OfficeRepository,
   ProjectFilter,
   ProjectInput,
   ProjectRepository,
   SettingsRepository,
-  TeamRepository,
   UserRepository,
 } from "@/domain/repositories";
 
 import { prisma } from "./client";
-import {
-  toCategory,
-  toContactMessage,
-  toNews,
-  toOffice,
-  toProject,
-  toTeamMember,
-  toUser,
-} from "./mappers";
+import { toCategory, toContactMessage, toProject, toUser } from "./mappers";
 
 const projectInclude = {
   category: true,
@@ -229,100 +210,8 @@ export class PrismaCategoryRepository implements CategoryRepository {
   }
 }
 
-export class PrismaNewsRepository implements NewsRepository {
-  async findMany(
-    filter: { state?: "DRAFT" | "PUBLISHED"; take?: number } = {},
-  ): Promise<NewsPost[]> {
-    const rows = await prisma.newsPost.findMany({
-      where: filter.state ? { state: filter.state } : {},
-      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-      take: filter.take,
-    });
-    return rows.map(toNews);
-  }
 
-  async findBySlug(slug: string): Promise<NewsPost | null> {
-    const row = await prisma.newsPost.findUnique({ where: { slug } });
-    return row ? toNews(row) : null;
-  }
 
-  async findById(id: string): Promise<NewsPost | null> {
-    const row = await prisma.newsPost.findUnique({ where: { id } });
-    return row ? toNews(row) : null;
-  }
-
-  async create(input: NewsInput): Promise<NewsPost> {
-    const row = await prisma.newsPost.create({ data: input });
-    return toNews(row);
-  }
-
-  async update(id: string, input: Partial<NewsInput>): Promise<NewsPost> {
-    const row = await prisma.newsPost.update({ where: { id }, data: input });
-    return toNews(row);
-  }
-
-  async delete(id: string): Promise<void> {
-    await prisma.newsPost.delete({ where: { id } });
-  }
-}
-
-export class PrismaTeamRepository implements TeamRepository {
-  async findMany(onlyVisible = false): Promise<TeamMember[]> {
-    const rows = await prisma.teamMember.findMany({
-      where: onlyVisible ? { visible: true } : {},
-      orderBy: { order: "asc" },
-    });
-    return rows.map(toTeamMember);
-  }
-
-  async findById(id: string): Promise<TeamMember | null> {
-    const row = await prisma.teamMember.findUnique({ where: { id } });
-    return row ? toTeamMember(row) : null;
-  }
-
-  async create(input: Omit<TeamMember, "id">): Promise<TeamMember> {
-    const row = await prisma.teamMember.create({ data: input });
-    return toTeamMember(row);
-  }
-
-  async update(
-    id: string,
-    input: Partial<Omit<TeamMember, "id">>,
-  ): Promise<TeamMember> {
-    const row = await prisma.teamMember.update({ where: { id }, data: input });
-    return toTeamMember(row);
-  }
-
-  async delete(id: string): Promise<void> {
-    await prisma.teamMember.delete({ where: { id } });
-  }
-}
-
-export class PrismaOfficeRepository implements OfficeRepository {
-  async findMany(): Promise<Office[]> {
-    const rows = await prisma.office.findMany({ orderBy: { order: "asc" } });
-    return rows.map(toOffice);
-  }
-
-  async findById(id: string): Promise<Office | null> {
-    const row = await prisma.office.findUnique({ where: { id } });
-    return row ? toOffice(row) : null;
-  }
-
-  async create(input: Omit<Office, "id">): Promise<Office> {
-    const row = await prisma.office.create({ data: input });
-    return toOffice(row);
-  }
-
-  async update(id: string, input: Partial<Omit<Office, "id">>): Promise<Office> {
-    const row = await prisma.office.update({ where: { id }, data: input });
-    return toOffice(row);
-  }
-
-  async delete(id: string): Promise<void> {
-    await prisma.office.delete({ where: { id } });
-  }
-}
 
 export class PrismaContactRepository implements ContactRepository {
   async findMany(filter: { read?: boolean } = {}): Promise<ContactMessage[]> {
