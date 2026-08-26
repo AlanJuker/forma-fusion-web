@@ -1,6 +1,5 @@
 import { SiteFooter } from "@/presentation/components/layout/site-footer";
 import { SiteHeader } from "@/presentation/components/layout/site-header";
-import { Cursor } from "@/presentation/components/ui/cursor";
 import { IntroOverlay } from "@/presentation/components/ui/intro-overlay";
 import { MotionProvider } from "@/presentation/components/ui/motion-provider";
 import { PageTransition } from "@/presentation/components/ui/page-transition";
@@ -29,7 +28,6 @@ export default async function SiteLayout({
       <div className="intro-shield" aria-hidden />
       <MotionProvider>
         <SmoothScroll />
-        <Cursor />
         <IntroOverlay />
         <SiteHeader categories={categories} />
         <main className="min-h-screen">

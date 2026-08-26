@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useRef } from "react";
 
-import type { Project } from "@/domain/entities/project";
+import { projectStatusLabel, type Project } from "@/domain/entities/project";
 import { ProjectMark } from "@/presentation/components/ui/logo";
 
 /**
@@ -60,6 +60,13 @@ function FichaProyecto({
 }) {
   const parallax = useParallaxFoto();
 
+  // Solo lo que no está ya escrito junto al título, y solo si consta.
+  const datos = [
+    { etiqueta: "Año", valor: String(project.year) },
+    project.size ? { etiqueta: "Superficie", valor: project.size } : null,
+    { etiqueta: "Estado", valor: projectStatusLabel(project.status) },
+  ].filter((d): d is { etiqueta: string; valor: string } => d !== null);
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 18 }}
@@ -104,6 +111,28 @@ function FichaProyecto({
                 style={{ objectPosition: project.coverPosition }}
                 priority={index < 3}
               />
+            </div>
+
+            {/* Al pasar el cursor asoma la ficha breve: los datos que no
+                caben junto al título. El degradado se concentra en la franja
+                baja, donde va el texto, para no apagar la fotografía entera. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-ink/75 via-ink/15 to-transparent opacity-0 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100"
+            >
+              <div className="flex w-full items-end justify-between gap-4 p-3 md:p-4">
+                <dl className="flex gap-5">
+                  {datos.map((dato) => (
+                    <div key={dato.etiqueta}>
+                      <dt className="ui-label text-paper/60">{dato.etiqueta}</dt>
+                      <dd className="ui-label mt-1 text-paper">{dato.valor}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <span className="ui-label hidden shrink-0 text-paper md:block">
+                  Ver &#8594;
+                </span>
+              </div>
             </div>
           </div>
         </div>

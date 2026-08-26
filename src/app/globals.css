@@ -252,36 +252,5 @@ html[data-intro="playing"] body {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Cursor de seguimiento. `difference` lo invierte contra lo que tenga debajo,
-   así que se ve tanto sobre el papel como sobre una fotografía. Nunca
-   intercepta el ratón, y no existe en pantallas táctiles ni con movimiento
-   reducido, donde el componente ni se monta.
---------------------------------------------------------------------------- */
-.ff-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 200;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-paper);
-  mix-blend-mode: difference;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  will-change: transform;
-}
 
-/* Sobre algo pulsable el punto se vacía y queda como anillo fino. */
-.ff-cursor[data-anillo="si"] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--color-paper);
-}
 
-@media (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .ff-cursor {
-    display: none;
-  }
-}
