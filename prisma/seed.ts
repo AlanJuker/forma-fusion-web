@@ -147,7 +147,8 @@ const imagePath = (slug: string, index: number) =>
 
 async function ensureAdminUser() {
   const email = (process.env.ADMIN_EMAIL ?? "admin@formafusion.ec").toLowerCase();
-  const password = process.env.ADMIN_PASSWORD ?? "FormaFusion2026!";
+  const password = process.env.ADMIN_PASSWORD;
+  if (!password) throw new Error("Falta ADMIN_PASSWORD para crear el usuario administrador.");
   const passwordHash = await bcrypt.hash(password, 12);
 
   await prisma.user.upsert({

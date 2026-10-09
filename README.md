@@ -82,14 +82,10 @@ openssl rand -base64 32
 
 ### Acceso al panel
 
-`http://localhost:3000/admin` — credenciales por defecto del seed en local:
+`http://localhost:3000/admin` — entra con `ADMIN_EMAIL` y `ADMIN_PASSWORD` de tu
+`.env`; el seed se detiene si `ADMIN_PASSWORD` no está definida.
 
-```
-Correo:      admin@formafusion.ec
-Contraseña:  FormaFusion2026!
-```
-
-> Estas son solo para desarrollo local. **En producción la contraseña es otra**,
+> **En producción la contraseña es otra**,
 > generada al desplegar y guardada en la variable `ADMIN_PASSWORD` del servicio
 > de Railway (`railway variables --service forma-fusion-web`). Para cambiarla,
 > actualiza la variable y borra el usuario para que el seed lo vuelva a crear.
